@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 public class Principal {
@@ -38,5 +42,8 @@ public class Principal {
 
         totalEstoque = estoque.calcularTotal(); //exibir a quantidade de produtos do estoque
         System.out.println("Quantidade de produtos em estoque atualizado: "+totalEstoque);
+
+
+
     }
 }
