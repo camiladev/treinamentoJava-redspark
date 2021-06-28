@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Produto {
@@ -5,17 +6,25 @@ public class Produto {
     private String nome;
     private int codigo;
     private float preco;
-    private Date validade;
+    private LocalDate validade;
 
     //construtor padrão
     public Produto(){}
 
     //construtor
-    public Produto(String nome, int codigo, float preco, Date validade) {
+    public Produto(String nome, int codigo, float preco, LocalDate validade) {
         this.nome = nome;
         this.codigo = codigo;
         this.preco = preco;
         this.validade = validade;
+    }
+
+
+    public boolean validaProdutoVencido(LocalDate dataValidade){
+        LocalDate dataLimite = LocalDate.now().plusDays(16);
+
+        return dataValidade.isBefore(dataLimite);
+
     }
 
     // getters e setters (metodos especiais)
@@ -43,12 +52,12 @@ public class Produto {
         this.preco = preco;
     }
 
-    public Date getValidade() {
+    public LocalDate getValidade() {
         return validade;
     }
 
-    public void setValidade(Date validade) {
-        this.validade = validade;
+    public void setValidade(LocalDate validade) {
+            this.validade = validade;
     }
 
 }

@@ -1,7 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Estoque {
 
@@ -10,13 +8,20 @@ public class Estoque {
     //ações
     public int calcularTotal(){
         //somar a quantidade de produtos tem na lista
-
         return listaEstoque.size();
     }
 
     public void acrescentarProduto(Produto produto){
-        //acrescentar Produto no estoque
-        listaEstoque.add(produto);
+        if (validarProdutoVencido(produto.getValidade())){
+            System.out.println("Produto vencido ou vence em 15 dias!");
+        }else {
+            listaEstoque.add(produto);
+        }
+    }
+
+    private boolean validarProdutoVencido(LocalDate validade) {
+        LocalDate dataLimite = LocalDate.now().plusDays(16);
+        return validade.isBefore(dataLimite);
     }
 
     public int contarItems(Produto item){
@@ -29,16 +34,18 @@ public class Estoque {
         return quantidade;
     }
 
-    public void retirarProduto(Produto produto, int qtd){
-        int quantidade = contarItems(produto);
+    public Produto retirarProduto(int codigo){
+        Optional<Produto> produtoOptional = listaEstoque.stream()
+                .filter(produtoEstoque -> produtoEstoque.getCodigo() == codigo)
+                .findFirst();
 
-        if(qtd <= quantidade){
+        if(produtoOptional.isPresent()){
             //retirar o produto do estoque
-            for (int i = 0; i < qtd; i++) {
-                listaEstoque.remove(produto);
-            }
+            listaEstoque.remove(produtoOptional.get());
+            return produtoOptional.get();
         }else {
-            System.out.println(produto.getNome()+" indisponivel");
+            System.out.println("Quantidade em estoque insuficiente ou produto não encontrado.");
+            return null;
         }
 
 

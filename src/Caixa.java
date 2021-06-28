@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,21 +10,30 @@ public class Caixa {
     private List<Produto> listaDeVendas = new ArrayList<>();
 
     //ações
-    public void venderProduto(Produto produto, int qtd, Estoque estoque){
-        //logica
+    public void venderProduto(int codigo, Estoque estoque){
         //retirar do estoque
-        estoque.retirarProduto(produto, qtd);
+        Produto produtoRetirado = estoque.retirarProduto(codigo);
 
         //acrescenta na lista
-        for (int indice = 0; indice < qtd; indice++) {
-            listaDeVendas.add(produto);
+        if (produtoRetirado != null) {
+            venderProdutoNaoVencido(produtoRetirado);
         }
     }
 
-    public void imprimir(int qdt, String prod, float valor){
+    private void venderProdutoNaoVencido(Produto produtoRetirado) {
+        if(produtoRetirado.getValidade().isBefore(LocalDate.now())){
+            System.out.println("Produto vencido");
+        }else{
+            listaDeVendas.add(produtoRetirado);
+        }
+    }
+
+    private boolean consultaDesconto(Produto produtoRetirado) {
+        return produtoRetirado.getValidade().isBefore(LocalDate.now().plusDays(15));
+    }
+
+    public void imprimir(int qdt, String prod, double valor){
         System.out.println(qdt+"x "+prod+"   -   R$ "+valor);
-
-
     }
 
     public int qtdItem(String nome){
@@ -42,16 +52,23 @@ public class Caixa {
         float precoTotal = 0f;
 
         int qtdVendida = 0;
+
         Map<String, Integer> map = new TreeMap<String, Integer>();
 
         for(Produto produto : listaDeVendas){
+
 
             Integer count = map.get(produto.getNome());
             if(count == null){
                 count = 0;
                 qtdVendida = qtdItem(produto.getNome());
                 map.put(produto.getNome(),count+1);
-                float totalUnit = produto.getPreco()*qtdVendida;
+                double totalUnit = 0;
+                if(consultaDesconto(produto)){
+                    totalUnit = (produto.getPreco()-(produto.getPreco() * 0.1)) *qtdVendida;
+                }else{
+                    totalUnit = produto.getPreco()*qtdVendida;
+                }
                 imprimir(qtdVendida,produto.getNome(),totalUnit);
             }
 
@@ -59,9 +76,9 @@ public class Caixa {
         }
 
 
-
-        System.out.println("-------------------");
+        System.out.println("-----------------------");
         System.out.println("Total:        R$ "+precoTotal);
+        System.out.println("-----------------------");
     }
 
 
