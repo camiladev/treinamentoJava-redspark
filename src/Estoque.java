@@ -1,19 +1,31 @@
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Estoque {
 
     private List<Produto> listaEstoque = new ArrayList<>();
 
-    public List<Produto> getListaEstoque() {
-        return listaEstoque;
+
+    public void listarProdutosEmEstoque() {
+        System.out.println("----> Produtos em Estoque <---- ");
+
+        Map<String, Long> result = listaEstoque.stream().collect(
+                Collectors.groupingBy(Produto::getNome, Collectors.counting()));
+
+        for (Map.Entry itemMap : result.entrySet()) {
+            System.out.println("Produto: "+itemMap.getKey() + " - Quantidade: "
+                    + itemMap.getValue());
+        }
+
+//        listaEstoque.stream()
+//                .map(item -> item.getNome())
+//                .distinct()
+//                .forEach(System.out::println);
+
     }
-
-    public void setListaEstoque(List<Produto> listaEstoque) {
-        this.listaEstoque = listaEstoque;
-    }
-
-
 
     //ações
     public int calcularTotal(){

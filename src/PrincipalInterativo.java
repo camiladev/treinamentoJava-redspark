@@ -2,7 +2,10 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PrincipalInterativo {
 
@@ -93,7 +96,7 @@ public class PrincipalInterativo {
         while (opcao != 0){
             System.out.println("Digite a opção desejada: ");
 
-            System.out.println("0 - Finalizar ");
+
             System.out.println("1 - Cadastrar novo produto e adicionar no estoque ");
             System.out.println("2 - Listar produtos em estoque ");
             System.out.println("3 - Iniciar venda ");
@@ -103,13 +106,15 @@ public class PrincipalInterativo {
             switch (opcao){
                 case 1: cadastraProduto(arq,scanner,estoque);
                     break;
-                case 2: lerProdutosEstoque(arq, estoque);
+                case 2: estoque.listarProdutosEmEstoque();
                     break;
                 case 3: iniciarVenda(estoque, caixa,scanner);
                     break;
             }
         }
     }
+
+
 
     private static void iniciarVenda(Estoque estoque, Caixa caixa, Scanner scanner) {
 
