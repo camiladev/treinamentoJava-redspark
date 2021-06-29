@@ -42,7 +42,7 @@ public class PrincipalInterativo {
                     LocalDate dataValidade = LocalDate.of(Integer.parseInt(dataValidadeArray[0]),Integer.parseInt(dataValidadeArray[1]),Integer.parseInt(dataValidadeArray[2]));
 
                     Produto produto = new Produto(dadosArray[1], Integer.parseInt(dadosArray[0]), Float.parseFloat(dadosArray[2]), dataValidade);
-                    estoque.acrescentarProduto(produto);
+                    estoque.atualizarEstoqueCadastrado(produto);
                 }
             }
             fileReader.close();
@@ -61,7 +61,9 @@ public class PrincipalInterativo {
             FileWriter fileWriter = new FileWriter(arq, true);
 
             PrintWriter printWriter = new PrintWriter(fileWriter);
+
             printWriter.println(produto.getCodigo()+";"+produto.getNome()+";"+produto.getPreco()+";"+produto.getValidade());
+            printWriter.println();
 
             printWriter.flush();
             printWriter.close();
@@ -101,7 +103,8 @@ public class PrincipalInterativo {
             switch (opcao){
                 case 1: cadastraProduto(arq,scanner,estoque);
                     break;
-                case 2:
+                case 2: lerProdutosEstoque(arq, estoque);
+                    break;
                 case 3: iniciarVenda(estoque, caixa,scanner);
                     break;
             }

@@ -1,8 +1,5 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Caixa {
 
@@ -32,53 +29,62 @@ public class Caixa {
         return produtoRetirado.getValidade().isBefore(LocalDate.now().plusDays(15));
     }
 
-    public void imprimir(int qdt, String prod, double valor){
-        System.out.println(qdt+"x "+prod+"   -   R$ "+valor);
+    public void imprimir(int qdt, String prod, float valor){
+        System.out.println(qdt+"x "+prod+"     -   R$ "+valor);
     }
 
-    public int qtdItem(String nome){
-        int qtd = 0;
-        for (Produto prod : listaDeVendas) {
-
-            if(nome == prod.getNome()) {
-                qtd += 1;
-            }
-
-        }
-        return qtd;
+    public long qtdItem(String nome){
+        long quantidade = listaDeVendas.stream()
+                .filter(produtoVendido -> produtoVendido.getNome().equals(nome))
+                .count();
+        return quantidade;
     }
 
     public void totalizarVenda(){
         float precoTotal = 0f;
 
         int qtdVendida = 0;
+        float valorDescontado = 0f;
+        float totalUnit = 0f;
+
 
         Map<String, Integer> map = new TreeMap<String, Integer>();
 
         for(Produto produto : listaDeVendas){
 
-
             Integer count = map.get(produto.getNome());
+
             if(count == null){
                 count = 0;
-                qtdVendida = qtdItem(produto.getNome());
+                //conta a quantidade vendida
+                qtdVendida = (int) qtdItem(produto.getNome());
+
                 map.put(produto.getNome(),count+1);
-                double totalUnit = 0;
+
                 if(consultaDesconto(produto)){
-                    totalUnit = (produto.getPreco()-(produto.getPreco() * 0.1)) *qtdVendida;
+                    valorDescontado = (float) (produto.getPreco() * 0.1);
+                    totalUnit = ((produto.getPreco()-valorDescontado) *qtdVendida);
+                    String nome = produto.getNome()+" *";
+
+                    imprimir(qtdVendida,nome,totalUnit);
                 }else{
                     totalUnit = produto.getPreco()*qtdVendida;
+                    imprimir(qtdVendida,produto.getNome(),totalUnit);
                 }
-                imprimir(qtdVendida,produto.getNome(),totalUnit);
+
             }
 
-            precoTotal = precoTotal + produto.getPreco(); //ou precoTotal += produto.getPreco();
+            precoTotal = precoTotal + totalUnit; //ou precoTotal += produto.getPreco();
         }
 
 
-        System.out.println("-----------------------");
-        System.out.println("Total:        R$ "+precoTotal);
-        System.out.println("-----------------------");
+        System.out.println("-----------------------------");
+        System.out.println("Total:              R$ "+precoTotal);
+        System.out.println("-----------------------------");
+        System.out.println("Descontado (*):     R$ "+valorDescontado);
+        System.out.println("-----------------------------");
+
+        listaDeVendas.clear();
     }
 
 

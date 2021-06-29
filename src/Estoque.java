@@ -5,6 +5,16 @@ public class Estoque {
 
     private List<Produto> listaEstoque = new ArrayList<>();
 
+    public List<Produto> getListaEstoque() {
+        return listaEstoque;
+    }
+
+    public void setListaEstoque(List<Produto> listaEstoque) {
+        this.listaEstoque = listaEstoque;
+    }
+
+
+
     //ações
     public int calcularTotal(){
         //somar a quantidade de produtos tem na lista
@@ -17,6 +27,10 @@ public class Estoque {
         }else {
             listaEstoque.add(produto);
         }
+    }
+
+    public void atualizarEstoqueCadastrado(Produto produto){
+        listaEstoque.add(produto);
     }
 
     private boolean validarProdutoVencido(LocalDate validade) {
